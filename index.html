@@ -9,7 +9,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="style.css?v=5" />
+    <link rel="stylesheet" href="style.css?v=6" />
   </head>
   <body>
     <header class="site-header">
@@ -75,15 +75,18 @@
           <form id="booking-form">
             <label for="customer-name">Seu nome</label>
             <input id="customer-name" name="customerName" type="text" autocomplete="name" placeholder="Como podemos te chamar?" required>
-            <label for="service-choice">Serviço</label>
-            <select id="service-choice" name="service" required>
-              <option value="" selected disabled>Selecione um serviço</option>
-              <option value="Corte — R$ 25">Corte — R$ 25</option>
-              <option value="Barba — R$ 15">Barba — R$ 15</option>
-              <option value="Sobrancelha — R$ 5">Sobrancelha — R$ 5</option>
-              <option value="Pezinho — R$ 10">Pezinho — R$ 10</option>
-              <option value="Pigmentação — R$ 20">Pigmentação — R$ 20</option>
-            </select>
+            <fieldset class="service-picker">
+              <legend>Serviços <small>Você pode escolher mais de um</small></legend>
+              <div class="service-options">
+                <label class="service-option"><input type="checkbox" name="services" value="Corte" data-price="25"><span>Corte</span><b>R$ 25</b></label>
+                <label class="service-option"><input type="checkbox" name="services" value="Barba" data-price="15"><span>Barba</span><b>R$ 15</b></label>
+                <label class="service-option"><input type="checkbox" name="services" value="Sobrancelha" data-price="5"><span>Sobrancelha</span><b>R$ 5</b></label>
+                <label class="service-option"><input type="checkbox" name="services" value="Pezinho" data-price="10"><span>Pezinho</span><b>R$ 10</b></label>
+                <label class="service-option"><input type="checkbox" name="services" value="Pigmentação" data-price="20"><span>Pigmentação</span><b>R$ 20</b></label>
+              </div>
+            </fieldset>
+            <p class="booking-total" id="booking-total" aria-live="polite">Total dos serviços: R$ 0,00</p>
+            <p class="booking-feedback" id="service-feedback" aria-live="polite"></p>
             <div class="booking-fields">
               <div><label for="appointment-date">Data</label><input id="appointment-date" name="date" type="date" required></div>
               <div><label for="appointment-time">Horário desejado</label><select id="appointment-time" name="time" required><option value="" selected disabled>Escolha um horário</option></select></div>
@@ -96,6 +99,6 @@
     </main>
 
     <footer class="footer"><a class="brand footer-brand" href="#inicio"><span class="brand-mark">PB</span><span class="brand-name">POWER <b>BLACK</b><small>BARBER SHOP</small></span></a><p>Seu estilo. Sua identidade.</p><span class="copyright">© 2026 POWER BLACK BARBER SHOP</span></footer>
-    <script src="Script.js?v=1"></script>
+    <script src="Script.js?v=2"></script>
   </body>
 </html>
