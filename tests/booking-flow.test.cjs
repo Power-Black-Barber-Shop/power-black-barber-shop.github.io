@@ -134,8 +134,8 @@ test('keeps the full schedule when booking for a future day', () => {
   const available = page.timeSelect.options.map((option) => option.value);
   assert.equal(available.includes('09:00'), true);
   assert.equal(available.includes('11:30'), true);
-  assert.equal(available[available.length - 1], '22:00');
-  assert.deepEqual(available.slice(-3), ['20:40', '21:30', '22:00']);
+  assert.equal(available[available.length - 1], '19:50');
+  assert.deepEqual(available.slice(-3), ['18:10', '19:00', '19:50']);
 });
 
 test('prepares a personalized WhatsApp message with emojis and booking details', () => {

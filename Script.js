@@ -39,17 +39,14 @@ function refreshAvailableTimes() {
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
   const openingMinutes = 9 * 60;
-  const closingMinutes = 22 * 60;
+  const closingMinutes = 20 * 60;
   const slotIntervalMinutes = 50;
   const scheduledMinutes = [];
   for (let minutes = openingMinutes; minutes <= closingMinutes; minutes += slotIntervalMinutes) {
     scheduledMinutes.push(minutes);
   }
-  if (scheduledMinutes[scheduledMinutes.length - 1] !== closingMinutes) {
-    scheduledMinutes.push(closingMinutes);
-  }
 
-  // Offer 50-minute slots through closing time; never show past times today.
+  // Offer 50-minute slots up to closing time; never show past times today.
   for (const minutes of scheduledMinutes) {
     if (isToday && minutes <= currentMinutes) continue;
     const hour = String(Math.floor(minutes / 60)).padStart(2, '0');
