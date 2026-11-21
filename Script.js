@@ -26,8 +26,8 @@ const localToday = new Date();
 localToday.setMinutes(localToday.getMinutes() - localToday.getTimezoneOffset());
 dateInput.min = localToday.toISOString().slice(0, 10);
 
-// Suggested request times; the shop confirms actual availability on WhatsApp.
-for (let minutes = 9 * 60; minutes <= 20 * 60; minutes += 30) {
+// Suggested request times every 50 minutes; the shop confirms actual availability on WhatsApp.
+for (let minutes = 9 * 60; minutes <= 20 * 60; minutes += 50) {
   const hour = String(Math.floor(minutes / 60)).padStart(2, '0');
   const minute = String(minutes % 60).padStart(2, '0');
   const value = `${hour}:${minute}`;
