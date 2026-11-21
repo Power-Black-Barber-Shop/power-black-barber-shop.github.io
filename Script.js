@@ -31,17 +31,26 @@ function refreshAvailableTimes() {
   while (timeSelect.options.length > 1) timeSelect.remove(1);
   timeSelect.value = '';
 
-  if (!dateInput.value) return;
-
   const now = new Date();
   const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
     .toISOString()
     .slice(0, 10);
-  const isToday = dateInput.value === localDate;
+  const isToday = !dateInput.value || dateInput.value === localDate;
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
-  // Suggested request times every 50 minutes; past times today are omitted.
-  for (let minutes = 9 * 60; minutes <= 20 * 60; minutes += 50) {
+  const openingMinutes = 9 * 60;
+  const closingMinutes = 22 * 60;
+  const slotIntervalMinutes = 50;
+  const scheduledMinutes = [];
+  for (let minutes = openingMinutes; minutes <= closingMinutes; minutes += slotIntervalMinutes) {
+    scheduledMinutes.push(minutes);
+  }
+  if (scheduledMinutes[scheduledMinutes.length - 1] !== closingMinutes) {
+    scheduledMinutes.push(closingMinutes);
+  }
+
+  // Offer 50-minute slots through closing time; never show past times today.
+  for (const minutes of scheduledMinutes) {
     if (isToday && minutes <= currentMinutes) continue;
     const hour = String(Math.floor(minutes / 60)).padStart(2, '0');
     const minute = String(minutes % 60).padStart(2, '0');
