@@ -108,6 +108,14 @@ function createPage() {
   return { dateInput, timeSelect, bookingForm, serviceFeedback, window };
 }
 
+test('shows upcoming times for today before a date is chosen', () => {
+  const page = createPage();
+  const available = page.timeSelect.options.map((option) => option.value);
+
+  assert.equal(available.includes('11:30'), false);
+  assert.equal(available.includes('12:20'), true);
+});
+
 test('hides earlier times when booking for today', () => {
   const page = createPage();
   page.dateInput.value = '2026-05-21';

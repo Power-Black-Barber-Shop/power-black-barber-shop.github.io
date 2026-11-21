@@ -31,13 +31,11 @@ function refreshAvailableTimes() {
   while (timeSelect.options.length > 1) timeSelect.remove(1);
   timeSelect.value = '';
 
-  if (!dateInput.value) return;
-
   const now = new Date();
   const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
     .toISOString()
     .slice(0, 10);
-  const isToday = dateInput.value === localDate;
+  const isToday = !dateInput.value || dateInput.value === localDate;
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
 
   // Suggested request times every 50 minutes; past times today are omitted.
