@@ -22,17 +22,41 @@ const serviceInputs = [...document.querySelectorAll('input[name="services"]')];
 const totalDisplay = document.querySelector('#booking-total');
 const serviceFeedback = document.querySelector('#service-feedback');
 
-const localToday = new Date();
-localToday.setMinutes(localToday.getMinutes() - localToday.getTimezoneOffset());
-dateInput.min = localToday.toISOString().slice(0, 10);
+const today = new Date();
+today.setMinutes(today.getMinutes() - today.getTimezoneOffset());
+dateInput.min = today.toISOString().slice(0, 10);
 
-// Suggested request times every 50 minutes; the shop confirms actual availability on WhatsApp.
-for (let minutes = 9 * 60; minutes <= 20 * 60; minutes += 50) {
-  const hour = String(Math.floor(minutes / 60)).padStart(2, '0');
-  const minute = String(minutes % 60).padStart(2, '0');
-  const value = `${hour}:${minute}`;
-  timeSelect.add(new Option(value, value));
+function refreshAvailableTimes() {
+  const previousSelection = timeSelect.value;
+  while (timeSelect.options.length > 1) timeSelect.remove(1);
+  timeSelect.value = '';
+
+  if (!dateInput.value) return;
+
+  const now = new Date();
+  const localDate = new Date(now.getTime() - now.getTimezoneOffset() * 60000)
+    .toISOString()
+    .slice(0, 10);
+  const isToday = dateInput.value === localDate;
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  // Suggested request times every 50 minutes; past times today are omitted.
+  for (let minutes = 9 * 60; minutes <= 20 * 60; minutes += 50) {
+    if (isToday && minutes <= currentMinutes) continue;
+    const hour = String(Math.floor(minutes / 60)).padStart(2, '0');
+    const minute = String(minutes % 60).padStart(2, '0');
+    const value = `${hour}:${minute}`;
+    timeSelect.add(new Option(value, value));
+  }
+
+  if ([...timeSelect.options].some((option) => option.value === previousSelection)) {
+    timeSelect.value = previousSelection;
+  }
 }
+
+dateInput.addEventListener('change', refreshAvailableTimes);
+timeSelect.addEventListener('focus', refreshAvailableTimes);
+refreshAvailableTimes();
 
 function selectedServices() {
   return serviceInputs.filter((input) => input.checked);
@@ -48,6 +72,12 @@ serviceInputs.forEach((input) => input.addEventListener('change', updateServiceT
 
 bookingForm.addEventListener('submit', (event) => {
   event.preventDefault();
+  refreshAvailableTimes();
+  if (!timeSelect.value) {
+    serviceFeedback.textContent = 'Escolha um horário disponível para continuar.';
+    timeSelect.focus();
+    return;
+  }
   const services = selectedServices();
   if (services.length === 0) {
     serviceFeedback.textContent = 'Escolha pelo menos um serviço para continuar.';
@@ -62,13 +92,14 @@ bookingForm.addEventListener('submit', (event) => {
   const formattedDate = new Intl.DateTimeFormat('pt-BR', { dateStyle: 'full' }).format(date);
   const time = timeSelect.value;
   const message = [
-    'Olá! Gostaria de solicitar um agendamento na Power Black Barber Shop.',
-    `Nome: ${name}`,
-    `Serviços: ${serviceList}`,
-    `Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`,
-    `Data: ${formattedDate}`,
-    `Horário desejado: ${time}`,
-    'Aguardo a confirmação. Obrigado!'
+    '💈 Olá! Tudo bem? Gostaria de agendar meu horário na Power Black Barber Shop. ✂️',
+    `👤 Nome: ${name}`,
+    `💈 Serviços: ${serviceList}`,
+    `💰 Total: ${new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(total)}`,
+    `📅 Data: ${formattedDate}`,
+    `⏰ Horário desejado: ${time}`,
+    '✅ Por favor, confirme se esse horário está disponível. Se não estiver, pode me sugerir outro? 😊',
+    '🙏 Obrigado!'
   ].join('\n');
   window.location.href = `https://wa.me/5586995412466?text=${encodeURIComponent(message)}`;
 });
